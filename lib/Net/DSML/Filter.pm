@@ -6,7 +6,7 @@ use strict;
 use Class::Std::Utils;
 
 use vars qw($VERSION @ISA @EXPORT @EXPORT_OK %EXPORT_TAGS);
-use version; $VERSION = version->new('0.001');
+use version; $VERSION = version->new('0.002');
 
 # Copyright (c) 2007 Clif Harden <charden@pobox.com>. All rights reserved.
 # This program is free software; you can redistribute it and/or
@@ -729,11 +729,12 @@ __END__
 
 =head1 NAME
 
-Net::DSML::filter.pm -  A perl module that supplies a LDAP DSML filter object.
+Net::DSML::filter.pm -  A perl module that supplies a Net::DSML::Filter object that is used by a Net::DSML object.
+
 
 =head1 VERSION
 
-This document describes Net::DSML::filter version 0.001
+This document describes Net::DSML::filter version 0.002
 
 
 =head1 SYNOPSIS

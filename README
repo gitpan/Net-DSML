@@ -1,7 +1,7 @@
 NAME
 
-    Net-DSML - A client interface to a LDAP Directory Services Markup Language 
-               (DSML) server.
+    Net-DSML - A perl module that supplies methods for connecting to a LDAP 
+               Directory Services Markup Language (DSML) server.
 
 DESCRIPTION
 

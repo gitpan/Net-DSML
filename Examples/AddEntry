@@ -5,6 +5,14 @@ use Net::DSML::Filter;
 use Net::DSML::Control;
 
 # 
+# Be sure to set up the first line to point to your perl executable location.
+#
+# Fill in the server, dn, password and base variables with values that 
+# match your configuration.
+# Fill in the attr hash attribute and value variables with values that
+# match your configuration.
+#
+# 
 # This example addes an entry to the ldap directory.
 # 
 my $server = "http://dsml.yourcompany.com:8080/dsml";

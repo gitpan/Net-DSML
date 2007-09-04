@@ -3,13 +3,18 @@ use Net::DSML;
 use Net::DSML::Filter;
 use Net::DSML::Control;
         
-
+# 
+# Be sure to set up the first line to point to your perl executable location.
+#
+# Fill in the server, base, superior and newrdn variables with values that
+# match your configuration.
+#
 # 
 # This example does a modrdn of an entry.
 # 
 my $server = "http://dsml.yourcompany.com:8080/dsml";
 my $base = "uid=clif,dc=people,dc=yourcompany,dc=com";
-my superior = "ou=people,dc=yourcompany,dc=com";
+my $superior = "ou=people,dc=yourcompany,dc=com";
 my $newrdn = "uid=me"; 
 my $webdsml;
 

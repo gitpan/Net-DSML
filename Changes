@@ -1,5 +1,19 @@
 Revision history for Net-DSML
 
-0.0.1  Tue August  30 20:30:39 2007
+0.001  Tue August  30 20:30:39 2007
        Initial release.
+
+0.002  Mon September 3 20:50:00 2007 
+       Added documentation to all of the files in the Examples
+       directory.  
+       Changed permissions on all of the executable files in Examples
+       to 744.  
+       Corrected major code error in Examples/ModRDN.
+       Made minor code change to Examples/Compare.
+       Made documentation changes to Net::DSML, Net::DSML::Filter and
+       Net::DSML::Control pm files.
+       Made documentation changes to the README file.
+
+
+
 

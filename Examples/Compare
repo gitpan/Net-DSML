@@ -4,6 +4,12 @@ use Net::DSML::Filter;
 use Net::DSML::Control;
 
 # 
+# Be sure to set up the first line to point to your perl executable location.
+#
+# Fill in the server, base, attribute and value variables with values that
+# match your configuration.
+#
+# 
 # This examples shows how to compare a value to an attribute.
 # 
 my $server = "http://dsml.yourcompany.com:8080/dsml";
@@ -18,8 +24,8 @@ my $webdsml;
    $webdsml = Net::DSML->new(  { url => $server } );
 
    if ( !( $webdsml->compare( { dn => $base, 
-                                attribute => "cn", 
-                                value => "Super Man" } ) ) )
+                                attribute => $attribute,
+                                value => $value } ) ) )
    {
       print "Compare error.", "\n";
       print $webdsml->error, "\n";

@@ -4,6 +4,11 @@ use Net::DSML::Filter;
 use Net::DSML::Control;
 
 # 
+# Be sure to set up the first line to point to your perl executable location.
+#
+# Fill in the server variable with a value that matchs your configuration.
+#
+# 
 # This example does a rootDSE search and returns information about the 
 # requested attributes.
 # 

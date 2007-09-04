@@ -10,7 +10,7 @@ use Class::Std::Utils;
 # modify it under the same terms as Perl itself.
 
 use vars qw($VERSION @ISA @EXPORT @EXPORT_OK %EXPORT_TAGS);
-use version; $VERSION = version->new('0.001');
+use version; $VERSION = version->new('0.002');
 
 {
 
@@ -293,12 +293,12 @@ __END__
 
 =head1 NAME
 
-Net::DSML::Control -  A perl module that supplies a LDAP DSML Control object.
+Net::DSML::Control -  A perl module that supplies a Net::DSML::Control object that is used with a Net::DSML object.
 
 
 =head1 VERSION
 
-This document describes Net::DSML::Control version 0.001
+This document describes Net::DSML::Control version 0.002
 
 
 =head1 SYNOPSIS

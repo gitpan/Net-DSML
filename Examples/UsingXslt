@@ -5,7 +5,10 @@ use Net::DSML::Filter;
 use Net::DSML::Control;
 
 # 
-# The method Usage provides a help message about the command line arguments.
+# Be sure to set up the first line to point to your perl executable location.
+#
+# Fill in the server, base, attribute and value variables with values that
+# match your configuration.
 # 
 my $server = "http://dsml.yourcompany.com:8080/dsml";
 my $base = "ou=people,dc=yourcompany,dc=com";

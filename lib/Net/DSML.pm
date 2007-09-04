@@ -12,7 +12,7 @@ use LWP::UserAgent;
 # modify it under the same terms as Perl itself.
 
 use vars qw($VERSION @ISA @EXPORT @EXPORT_OK %EXPORT_TAGS);
-use version; $VERSION = version->new('0.001');
+use version; $VERSION = version->new('0.002');
 
 {
 
@@ -1733,12 +1733,12 @@ __END__
 
 =head1 NAME
 
-Net::DSML -  A perl module that supplies a LDAP DSML connection object.
+Net::DSML -  A perl module that supplies methods for connecting to a LDAP Directory Services Markup Language (DSML) server.
 
 
 =head1 VERSION
 
-This document describes Net::DSML version 0.001
+This document describes Net::DSML version 0.002
 
 
 =head1 SYNOPSIS
