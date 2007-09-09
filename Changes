@@ -14,6 +14,13 @@ Revision history for Net-DSML
        Net::DSML::Control pm files.
        Made documentation changes to the README file.
 
-
-
+0.003  Sat September 8 22:00:00 2007
+       Added new tests to t/30.dsml.t.
+       Updated Net::DSML to version 0.003.
+       Updated pod documentation in Net::DSML to reflect changes in software.
+       Added id option to subroutines search,rootDSE,compare,add,modify,
+       modrdn and delete in the Net::DSML file.
+       Added base option to subroutine search in the Net::DSML file.
+       Corrected an execute permission problem on Examples/ModifyEntry file.
+      
 

@@ -12,7 +12,7 @@ use LWP::UserAgent;
 # modify it under the same terms as Perl itself.
 
 use vars qw($VERSION @ISA @EXPORT @EXPORT_OK %EXPORT_TAGS);
-use version; $VERSION = version->new('0.002');
+use version; $VERSION = version->new('0.003');
 
 {
 
@@ -783,13 +783,16 @@ sub Ping
 # 
 # The method DSE the searchs the root, or dse, of the dsml server. 
 # 
-# If there is one required input option.
+# There is one required input option.
+# Input option "attributes":  Array of attributes to get information on.
+# 
+# There is one optional input option.
+# Input option "id":  The request ID for this operation.
 # 
 # $return = $dsml->rootDSE( { attributes => \@attributes } );
 # $return = $dsml->send();  # Post the xml message to the DSML server
 # $return = $dsml->content(); # Get the data returned from the DSML server.
 # 
-# Input option "attributes":  Array of attributes to get information on.
 #
 # The scope will automatically be set to the correct value for the user.
 #
@@ -817,7 +820,11 @@ sub rootDSE
 
   # Load Process ID
 
-  if ( $ops{$id}->{pid} )
+  if ( $opt->{id} )
+  {
+     $result .= $reqID . (ref($opt->{id}) ? ${$opt->{id}} : $opt->{id}) . "\"";
+  }
+  elsif ( $ops{$id}->{pid} )
   {
      $result .= $ops{$id}->{pid};
      delete($ops{$id}->{pid});
@@ -884,8 +891,10 @@ sub setProxy
 # Input option "attributes":  Array reference of attributes to get 
 # information on.
 # 
-# If there is 1 optional input option.
+# There are 3 optional input options.
+# Input option "id":  The request ID for this operation.
 # Input option "control":  The Control object that contains the control string.
+# Input option "base":  The search base dn.
 # 
 # $return = $dsml->search( { sfilter => $dsml->getFilter(),
 #                            attributes => \@attributes },
@@ -906,7 +915,6 @@ sub search
   my $count;
   my $id = ident $dsml;
   my $result;
-
   $count = @{$opt->{attributes}};
   $errMsg{$id} = "";
 
@@ -922,6 +930,14 @@ sub search
     return 0;
   }
 
+  if ( $opt->{base} )
+  {
+    if (!$dsml->setBase( {base => (ref($opt->{base}) ? ${$opt->{base}} : $opt->{base}) }))
+    {
+      return 0;
+    }
+  }
+  
   #
   # build search xml message
   #
@@ -929,8 +945,11 @@ sub search
   $result =  "<searchRequest";
   
   # Load Process ID
-  
-  if ( $ops{$id}->{pid} )
+  if ( $opt->{id} )
+  {
+     $result .= $reqID . (ref($opt->{id}) ? ${$opt->{id}} : $opt->{id}) . "\"";
+  }
+  elsif ( $ops{$id}->{pid} )
   {
      $result .= $ops{$id}->{pid};
      delete($ops{$id}->{pid});
@@ -971,14 +990,17 @@ sub search
 # The method compare compares  the dsml server for the requested information.
 # 
 # There are three required input options.
+# Input option "dn": The dn of the object that you wish to do the comparsion on 
+# Input option "attribute":  attributes to compare the value of.
+# Input option "value":  value to compare against.
+# 
+# There are two option input options.
+# Input option "id":  The request ID for this operation.
+# Input option "control":  A Net::DSML::Control object.
 # 
 # $return = $dsml->compare( { dn => "cn=Super Man,ou=People,dc=xyz,dc=com", attibute => "sn", value => "manager" } );
 # $return = $dsml->send();  # Post the xml message to the DSML server
 # $content = $dsml->content(); # Get the data returned from the DSML server.
-# 
-# Input option "dn": The dn of the object that you wish to do the comparsion on 
-# Input option "attribute":  attributes to compare the value of.
-# Input option "value":  value to compare against.
 # 
 # Method output;  Returns 1 (true) on success;  0 (false) on error, error 
 # message can be gotten with error method.
@@ -1025,7 +1047,11 @@ sub compare
 
   # Load Process ID
  
-  if ( $ops{$id}->{pid} )
+  if ( $opt->{id} )
+  {
+     $result .= $reqID . (ref($opt->{id}) ? ${$opt->{id}} : $opt->{id}) . "\"";
+  }
+  elsif ( $ops{$id}->{pid} )
   {
      $result .= $ops{$id}->{pid};
      delete($ops{$id}->{pid});
@@ -1052,10 +1078,10 @@ sub compare
 # 
 # There is one required input option.
 # Input option "dn": The dn of the entry that you wish to delete.
-# There is one secondary input option.
+# There are two optional input options.
 # Input option "control": The control object to be used with the delete 
 # operation. 
-
+# Input option "id":  The request ID for this operation.
 # 
 # $return = $dsml->delete( { dn => "cn=Super Man,ou=People,dc=xyz,dc=com" } );
 # $return = $dsml->send();  # Post the xml message to the DSML server
@@ -1111,7 +1137,11 @@ sub delete
 
      # Load Process ID
 
-     if ( $ops{$id}->{pid} )
+     if ( $opt->{id} )
+     {
+        $result .= $reqID . (ref($opt->{id}) ? ${$opt->{id}} : $opt->{id}) . "\"";
+     }
+     elsif ( $ops{$id}->{pid} )
      {
         $result .= $ops{$id}->{pid};
         delete($ops{$id}->{pid});
@@ -1138,9 +1168,11 @@ sub delete
 # Input option "dn": The dn of the entry that you wish to delete.
 # Input option "newsuperior": The base dn of the entry that you wish to rename.
 # Input option "newrdn": The rdn of the new entry that you wish to create.
-# There is one secondary input option.
+# There are three optional input options.
 # Input option "deleteoldrdn": The flag that controls the deleting of the 
 # entry:  true -> delete entry, false -> keep entry.
+# Input option "id":  The request ID for this operation.
+# Input option "control": A Net::DSML::Control object output.
 # 
 # $return = $dsml->modrdn( { dn => "cn=Super Man,ou=People,dc=xyz,dc=com",
 #                            newrdn => "cn=Bad Boy",
@@ -1197,7 +1229,11 @@ sub modrdn
 
   # Load Process ID
 
-  if ( $ops{$id}->{pid} )
+  if ( $opt->{id} )
+  {
+     $result .= $reqID . (ref($opt->{id}) ? ${$opt->{id}} : $opt->{id}) . "\"";
+  }
+  elsif ( $ops{$id}->{pid} )
   {
      $result .= $ops{$id}->{pid};
      delete($ops{$id}->{pid});
@@ -1230,8 +1266,9 @@ sub modrdn
 # Input option "attr": A hash of the attributes and their values that are
 #                      that are to be in the entry.
 #
-# There is one optional input option.
+# There are two optional input options.
 # Input option "control": A Net::DSML::Control object output.
+# Input option "id":  The request ID for this operation.
 #
 #
 # $result = $dsml->add( { dn => 'cn=Barbara Jensen, o=University of Michigan, c=US',
@@ -1283,7 +1320,11 @@ sub add
   
   # Load Process ID
   
-  if ( $ops{$id}->{pid} )
+  if ( $opt->{id} )
+  {
+     $result .= $reqID . (ref($opt->{id}) ? ${$opt->{id}} : $opt->{id}) . "\"";
+  }
+  elsif ( $ops{$id}->{pid} )
   {
      $result .= $ops{$id}->{pid};
      delete($ops{$id}->{pid});
@@ -1345,8 +1386,9 @@ sub add
 # Input option "attr": A hash of the attributes and their values that are
 #                      that are to be in the entry.
 #
-# There is one optional input option.
+# There are two optional input option.
 # Input option "control": A Net::DSML::Control object output.
+# Input option "id":  The request ID for this operation.
 #
 #
 # $result = $dsml->modify( { 
@@ -1403,7 +1445,11 @@ sub modify
   
   # Load Process ID
   
-  if ( $ops{$id}->{pid} )
+  if ( $opt->{id} )
+  {
+     $result .= $reqID . (ref($opt->{id}) ? ${$opt->{id}} : $opt->{id}) . "\"";
+  }
+  elsif ( $ops{$id}->{pid} )
   {
      $result .= $ops{$id}->{pid};
      delete($ops{$id}->{pid});
@@ -1433,16 +1479,16 @@ sub modify
          {
            if ( !(length(${$opt->{modify}{$action}{$i}})))
            {
-              $result .= "<modification  name=\"$i\" operation=\"$action\"></modification>";
+              $result .= "<modification name=\"$i\" operation=\"$action\"></modification>";
            }
            else
            {
-              $result .= "<modification  name=\"$i\" operation=\"$action\"><value>${$opt->{modify}{$action}{$i}}</value></modification>";
+              $result .= "<modification name=\"$i\" operation=\"$action\"><value>${$opt->{modify}{$action}{$i}}</value></modification>";
            }
          }
          elsif (ref($opt->{modify}{$action}{$i}) eq 'ARRAY')
          {
-           $result .= "<modification  name=\"$i\" operation=\"$action\">";
+           $result .= "<modification name=\"$i\" operation=\"$action\">";
            foreach my $val ( @{$opt->{modify}{$action}{$i}})
            {
              if ( length($val))
@@ -1461,16 +1507,11 @@ sub modify
       }
       else
       {
-         $result .= "<modification  name=\"$i\" operation=\"$action\">";
+         $result .= "<modification name=\"$i\" operation=\"$action\">";
          if ( length($opt->{modify}{$action}{$i}))
          {
-           #$result .= "<modification  name=\"$i\" operation=\"$action\"></modification>";
            $result .= "<value>$opt->{modify}{$action}{$i}</value>";
          }
-         #else
-         #{
-         #  $result .= "<modification  name=\"$i\" operation=\"$action\"><value>$opt->{modify}{$action}{$i}</value></modification>";
-         #}
          $result .= "</modification>";
       }
 
@@ -1738,7 +1779,7 @@ Net::DSML -  A perl module that supplies methods for connecting to a LDAP Direct
 
 =head1 VERSION
 
-This document describes Net::DSML version 0.002
+This document describes Net::DSML version 0.003
 
 
 =head1 SYNOPSIS
@@ -1770,11 +1811,10 @@ This document describes Net::DSML version 0.002
                          url => "http://system.company.com:8080/dsml" });
  # Set the batch ID
  $dsml->setBatchId( { id => "1" } );
- # Set the search base entry.
- $dsml->setBase( { base => $base } );
 
  if ( !( $dsml->search( { sfilter => $webfilter->getFilter(), 
                           attributes => \@attributes,
+                          base => $base,
                           control => $webcontrol->getControl() } ) ) )
 (
     print $dsml->error, "\n";
@@ -1874,8 +1914,9 @@ This document describes Net::DSML version 0.002
  # The user then uses the xml parser if their choice to break down
  # the returned xml message.
 
-There are other examples in the module`s Examples directory and the
-module test files are good examples of using this module.
+There are other examples in the scripts that are in the module`s 
+Examples directory and the module test files are good examples of 
+using this module.
 
 =head1 DESCRIPTION
 
@@ -2213,10 +2254,15 @@ There are two required input options.
  Input option "attributes":  Reference to an array of attributes to get 
  information on.
 
-There is one optional input option.
+There are three optional input options.
+ Input option "id":  The request ID for this operation.
  Input option "control": A Net::DSML::Control object output.
+ Input option "base": The search base dn.
 
  $return = $dsml->search( { sfilter => $dsml->getFilter(), 
+                            id => 234,
+                            base => "ou=people,dc=yourcompany,dc=com",
+                            control => $dsmlControl->getControl(),
                             attributes => \@attributes } );
  # Post the message to the DSML server
  $return = $dsml->send();
@@ -2240,8 +2286,9 @@ There are 2 required input options.
  Input option "attr": A hash of the attributes and their values that are
                       that are to be in the entry.
 
-There is one optional input option.
+There are two optional input option.
  Input option "control": A Net::DSML::Control object output.
+ Input option "id":  The request ID for this operation.
 
 Example using the http authenication process.
  
@@ -2312,8 +2359,9 @@ There are 2 required input options.
  Input option "modify": A hash of the attributes and their values that are
                        that are to be in the entry.
 
-There is one optional input option.
+There are two optional input option.
  Input option "control": A Net::DSML::Control object output.
+ Input option "id":  The request ID for this operation.
 
  $result = $dsml->modify( { 
             dn => 'cn=Barbara Jensen, o=University of Michigan, c=US',
@@ -2359,11 +2407,13 @@ There are three required input options.
  Input option "attribute":  attribute to compare.
  Input option "value":  value to compare against.
 
-There is one optional input option.
+There are 2 optional input options.
  Input option "control": A Net::DSML::Control object output.
+ Input option "id":  The request ID for this operation.
  
  $return = $dsml->compare( { dn => "cn=Man,ou=People,dc=xyz,dc=com", 
                              attibute => "sn", 
+                             id => 123, 
                              value => "manager" } );
  # Post the xml message to the DSML server
  $return = $dsml->send();
@@ -2391,10 +2441,11 @@ There is one required input option.
  
 There is one optional input option.
  Input option "control": A Net::DSML::Control object output.
+ Input option "id":  The request ID for this operation.
 
  $return = $dsml->delete( { 
-                  dn => "cn=Super Man,ou=People,dc=xyz,dc=com"
-                          } );
+                  dn => "cn=Super Man,ou=People,dc=xyz,dc=com",
+                  id => 1 } );
  # Post the xml message to the DSML server
  $return = $dsml->send();
  # Get the data returned from the DSML server.
@@ -2418,10 +2469,11 @@ There are three required input options.
  Input option "newrdn": The rdn of the new entry that you 
  wish to create.
 
-There are two optional input options.
+There are three optional input options.
  Input option "deleteoldrdn": The flag that controls the 
  deleting of the entry:  true or false.
  Input option "control": A Net::DSML::Control object output.
+ Input option "id":  The request ID for this operation.
 
  $return = $dsml->modrdn( { 
             dn => "cn=Super Man,ou=People,dc=xyz,dc=com",
@@ -2495,7 +2547,10 @@ There is one required input option.
 There is one optional input option.
  Input option "control": A Net::DSML::Control object output.
 
- $return = $dsml->rootDSE( { attributes => \@attributes } );
+There is one optional input option.
+ Input option "id":  The request ID for this operation.
+ 
+ $return = $dsml->rootDSE( { id => 21, attributes => \@attributes } );
  $return = $dsml->send();  # Post the message to the DSML server
  $content = $dsml->content(); # Get data returned from the DSML server.
 
